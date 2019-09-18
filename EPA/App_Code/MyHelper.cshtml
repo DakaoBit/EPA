@@ -1,0 +1,38 @@
+﻿@using System.Web.Mvc;
+
+@functions{
+    public static string IsLevel(string aqi)
+    {
+        if (!string.IsNullOrWhiteSpace(aqi))
+        {
+            if (!aqi.Equals(null))
+            {
+                double ratio = Convert.ToDouble(aqi);
+
+                if (ratio <= 50)
+                    return "bg_green";
+
+                else if (50 < ratio && ratio <= 100)
+                    return "bg_yellow";
+
+                else if (100 < ratio && ratio <= 150)
+                    return "bg_orange";
+
+                else if (150 < ratio && ratio <= 200)
+                    return "bg_red";
+
+                else if (200 < ratio && ratio <= 300)
+                    return "bg_purple";
+
+                else if (300 < ratio && ratio <= 400)
+                    return "bg_lakes";
+
+                else
+                    return null;
+            }
+        }
+
+
+        return null;
+    }
+}

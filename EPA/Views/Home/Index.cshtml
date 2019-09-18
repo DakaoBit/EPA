@@ -1,31 +1,180 @@
-﻿@{
+﻿@model  IEnumerable<EPA.Models.ViewModels.AQIViewModel>
+@{
     ViewBag.Title = "Home Page";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+<section style="margin-top:50px" class="section">
+    <div class="container">
+        <div class="tile is-ancestor">
+            <div class="tile is-4 is-vertical is-parent">
+                <div class="tile is-child box has-text-centered">
+                    <p class="title"> 空氣品質指標（AQI）</p>
+                    <hr />
+                    <div class="select is-rounded">
+                        <form action="@Url.Action("Index","Home")" method="get">
+                            @Html.DropDownList("County", (IEnumerable<SelectListItem>)ViewBag.countyOptions, new { onchange= "if(this.value != 0) { this.form.submit(); }" })
+                        </form>
+                    </div>
+                </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+            </div>
+            <div class="tile is-8 is-parent">
+                <div class="tile is-child box">
+                    <table class="aqi_table">
+                        <thead>
+                            <tr>
+                                <th class="bg_green"> 0 ~ 50</th>
+                                <th class="bg_yellow"> 51 ~ 100</th>
+                                <th class="bg_orange"> 101 ~ 150</th>
+                                <th class="bg_red"> 151 ~ 200</th>
+                                <th class="bg_purple"> 201 ~ 300</th>
+                                <th class="bg_lakes"> 301 ~ 400</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>良好</td>
+                                <td>普通</td>
+                                <td>對敏感族群不健康</td>
+                                <td>對所有族群不健康</td>
+                                <td>非常不健康</td>
+                                <td>危害</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+
+    <hr />
+
+    <div class="container">
+        @* 所屬縣市 *@
+        <div class="columns">
+            <div class="column is-half">
+                <p class="title">@Model.First().County</p>
+            </div>
+            <div class="column is-half has-text-right">
+                <p class="subtitle">@Model.First().PublishTime 更新</p>
+            </div>
+        </div>
+
+        @* 區別 *@
+        <div class="columns">
+            @* 監測站 資料 *@
+            <div class="column is-4">
+                <div class="aqi_card">
+                    <div id="SiteName" class="aqi_item">
+                        @Model.First().SiteName
+                    </div>
+                    <div id="AQI" class="aqi_item @MyHelper.IsLevel(Model.First().AQI)">
+                        @if (!string.IsNullOrWhiteSpace(@Model.First().AQI))
+                        {
+                            @Model.First().AQI
+                        }
+                        else
+                        {
+                            <p>無</p>
+                        }
+                    </div>
+                </div>
+                <div class="aqi_item_wrapper">
+                    <ul>
+                        <li>
+                            <span class="aqi_item_cht">臭氧</span>
+                            <span class="aqi_item_eng">O<sub>3</sub>(ppb)</span>
+                            <span id="O3" class="aqi_item_index">@Model.First().O3</span>
+                        </li>
+                        <li>
+                            <span class="aqi_item_cht">懸浮微粒</span>
+                            <span class="aqi_item_eng"> PM<sub>10</sub>(μg/m<sup>3</sup>)</span>
+                            <span id="PM10" class="aqi_item_index">@Model.First().PM10</span>
+                        </li>
+                        <li>
+                            <span class="aqi_item_cht">細懸浮微粒</span>
+                            <span class="aqi_item_eng">PM<sub>2.5</sub>(μg/m<sup>3</sup>)</span>
+                            <span id="pm25" class="aqi_item_index">@Model.First().PM25</span>
+                        </li>
+                        <li>
+                            <span class="aqi_item_cht">一氧化碳</span>
+                            <span class="aqi_item_eng"> CO (ppm)</span>
+                            <span id="CO" class="aqi_item_index">@Model.First().CO</span>
+                        </li>
+                        <li>
+                            <span class="aqi_item_cht">二氧化硫</span>
+                            <span class="aqi_item_eng"> SO<sub>2</sub>(ppb)</span>
+                            <span id="SO2" class="aqi_item_index">@Model.First().SO2</span>
+                        </li>
+                        <li>
+                            <span class="aqi_item_cht">二氧化氮</span>
+                            <span class="aqi_item_eng"> NO<sub>2</sub>(ppb)</span>
+                            <span id="NO2" class="aqi_item_index">@Model.First().NO2</span>
+                        </li>
+                        <li>
+                            <span class="aqi_item_cht">風速</span>
+                            <span class="aqi_item_eng">(m / sec)</span>
+                            <span id="WindSpeed" class="aqi_item_index">@Model.First().WindSpeed</span>
+                        </li>
+                        <li>
+                            <span class="aqi_item_cht">風向</span>
+                            <span class="aqi_item_eng">(degrees)</span>
+                            <span id="WindDirec" class="aqi_item_index">@Model.First().WindDirec</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            @* 區內 監測站 *@
+            <div class="column is-8">
+                @foreach (var item in Model)
+                {
+                    <div class="columns">
+                        <div class="column is-12">
+                            <a class="aqi_card" onclick="SelectSite('@item.SiteId')">
+                                <div class="aqi_item">
+                                    @item.SiteName
+                                </div>
+                                <div class="aqi_item @MyHelper.IsLevel(item.AQI)">
+                                    @if (!string.IsNullOrWhiteSpace(item.AQI))
+                                    {
+                                        @item.AQI
+                                    }
+                                    else
+                                    {
+                                        <p>無</p>
+                                    }
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
+</section>
+ 
+
+<script>
+    function SelectSite(SiteId) {
+        var url = "/Home/GetSite?SiteId=" + SiteId;
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: function (data) {
+                $("#SiteName").html(data.SiteName);
+                $("#AQI").html(data.AQI);
+
+                $("#O3").html(data.O3);
+                $("#PM10").html(data.PM10);
+                $("#PM25").html(data.PM25);
+                $("#CO").html(data.CO);
+                $("#SO2").html(data.SO2);
+                $("#NO2").html(data.NO2);
+                $("#WindSpeed").html(data.WindSpeed);
+                $("#WindDirec").html(data.WindDirec);
+ 
+            }
+        })
+    }
+</script>

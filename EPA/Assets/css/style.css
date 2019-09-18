@@ -1,0 +1,133 @@
+﻿
+/** air quality color **/
+
+.bg_green {
+    background-color: #86C166 !important;
+}
+
+.bg_yellow {
+    background-color: #F6C555 !important;
+}
+
+.bg_orange {
+    background-color: #E98B2A !important;
+}
+
+.bg_red {
+    background-color: #C73E3A !important;
+}
+
+.bg_purple {
+    background-color: #77428D !important;
+}
+
+.bg_lakes {
+    background-color: #C1328E !important;
+}
+
+
+/**  **/
+
+.aqi_table {
+    border: 2px solid #1C1C1C;
+    text-align: center;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 16px;
+    text-align: center;
+    border-collapse: collapse;
+    width: 100%;
+    background-color: #fff;
+}
+
+    .aqi_table thead th, .aqi_table tbody td {
+        padding: 15px;
+        border: 2px solid #000;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+select {
+    font-family: 'Noto Sans TC', sans-serif;
+}
+
+/**  **/
+
+.aqi_card {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-align-items: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+a.aqi_card {
+   color: #4a4a4a;
+}
+
+.aqi_item {
+    border: 3px solid #363636;
+    padding: 10px;
+    background: #fff;
+    flex: 1 1 auto;
+    margin: 0px;
+    text-align: center;
+    font-size: 25px;
+    font-weight: 900;
+}
+
+    .aqi_item:last-child {
+        border-left: 0px;
+    }
+
+
+.aqi_item_wrapper {
+    position:relative;
+    border-left: 3px solid #363636;
+    border-right: 3px solid #363636;
+    border-bottom: 3px solid #363636;
+    background-color: #fff;
+}
+
+    .aqi_item_wrapper ul {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    .aqi_item_wrapper li {
+        padding: 10px;
+        border-bottom: 2px solid #363636;
+    }
+
+        .aqi_item_wrapper li:first-child {
+            padding-top: 15px;
+        }
+
+        .aqi_item_wrapper li:last-child {
+            border-bottom: 0;
+        }
+
+.aqi_item_cht {
+    display: inline-block;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.aqi_item_eng {
+    display: inline-block;
+    font-size: 16px;
+    margin-left: 5px;
+}
+
+.aqi_item_index {
+    display: inline-block;
+    position: absolute;
+    right: 30px;
+    text-align: right;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+ 
+
