@@ -1,0 +1,165 @@
+﻿
+@{
+    ViewBag.Title = "Map";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- 
+    https://tutorials.webduino.io/zh-tw/docs/socket/useful/google-map-1.html
+    -->
+<style>
+     #map {
+        width: 100%;
+        height: 600px;
+        background-color: grey;
+      }
+</style>
+
+<section style="margin-top:50px" class="section">
+    <div class="container">
+        <div class="columns">
+            <div id="map" class="column"></div>
+            <div class="column"></div>
+        </div>
+      
+    </div>
+</section>
+
+
+<script>
+    function initMap() {
+        var map;
+        var markers = [];
+
+        var iconBase = "https://airtw.epa.gov.tw/images/";
+
+        var icons = {
+            well: {
+                icon: iconBase + "air_01.svg"
+            },
+            ordinary: {
+                icon: iconBase + "air_02.svg"
+            },
+            sensitive: {
+                icon: iconBase + "air_03.svg"
+            },
+            all: {
+                icon: iconBase + "air_04.svg"
+            },
+            unhealthy: {
+                icon: iconBase + "air_05.svg"
+            },
+            danger: {
+                icon: iconBase + "air_06.svg"
+            },
+        };
+
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: 23.6452265, lng: 121.0331083 },
+            zoom:7,
+            mapTypeId: 'terrain',
+            // Styled Map - Night Mode
+            styles: [
+           { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },
+           { elementType: 'labels.text.stroke', stylers: [{ color: '#242f3e' }] },
+           { elementType: 'labels.text.fill', stylers: [{ color: '#746855' }] },
+           {
+               featureType: 'administrative.locality',
+               elementType: 'labels.text.fill',
+               stylers: [{ color: '#d59563' }]
+           },
+           {
+               featureType: 'poi',
+               elementType: 'labels.text.fill',
+               stylers: [{ color: '#d59563' }]
+           },
+           {
+               featureType: 'poi.park',
+               elementType: 'geometry',
+               stylers: [{ color: '#263c3f' }]
+           },
+           {
+               featureType: 'poi.park',
+               elementType: 'labels.text.fill',
+               stylers: [{ color: '#6b9a76' }]
+           },
+           {
+               featureType: 'road',
+               elementType: 'geometry',
+               stylers: [{ color: '#38414e' }]
+           },
+           {
+               featureType: 'road',
+               elementType: 'geometry.stroke',
+               stylers: [{ color: '#212a37' }]
+           },
+           {
+               featureType: 'road',
+               elementType: 'labels.text.fill',
+               stylers: [{ color: '#9ca5b3' }]
+           },
+           {
+               featureType: 'road.highway',
+               elementType: 'geometry',
+               stylers: [{ color: '#746855' }]
+           },
+           {
+               featureType: 'road.highway',
+               elementType: 'geometry.stroke',
+               stylers: [{ color: '#1f2835' }]
+           },
+           {
+               featureType: 'road.highway',
+               elementType: 'labels.text.fill',
+               stylers: [{ color: '#f3d19c' }]
+           },
+           {
+               featureType: 'transit',
+               elementType: 'geometry',
+               stylers: [{ color: '#2f3948' }]
+           },
+           {
+               featureType: 'transit.station',
+               elementType: 'labels.text.fill',
+               stylers: [{ color: '#d59563' }]
+           },
+           {
+               featureType: 'water',
+               elementType: 'geometry',
+               stylers: [{ color: '#17263c' }]
+           },
+           {
+               featureType: 'water',
+               elementType: 'labels.text.fill',
+               stylers: [{ color: '#515c6d' }]
+           },
+           {
+               featureType: 'water',
+               elementType: 'labels.text.stroke',
+               stylers: [{ color: '#17263c' }]
+           }
+            ]
+        });
+
+        //建立地圖 marker 的集合
+        var marker = [
+        {
+            position: { lat: 25.129167, lng: 121.760056 },
+            map: map,
+            title: '基隆監測站',
+            type: 'well'
+        },
+        ];
+
+        for (var i = 0; i < marker.length; i++) {
+            var marker = new google.maps.Marker({
+                position: marker[i].position,
+                icon: icons[marker[i].type].icon,
+                map: map
+            });
+        }
+      
+    }
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDRYyKhiXS0Bmtfld_yftl2ATtitLYl7k0&callback=initMap">
+</script>

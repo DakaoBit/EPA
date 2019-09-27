@@ -48,7 +48,7 @@ namespace EPA.Controllers
             return View(AQI);
 
         }
- 
+
         /// <summary>
         /// 取得單一監測站資料
         /// </summary>
@@ -73,5 +73,10 @@ namespace EPA.Controllers
             return Json(site, JsonRequestBehavior.AllowGet);
         }
 
+
+        public ActionResult Map()
+        {
+            return View();
+        }
     }
 }
