@@ -3,16 +3,25 @@
     ViewBag.Title = "Home Page";
 }
 
+<style>
+    #map {
+        width: 100%;
+        height: 500px;
+        background-color: grey;
+    }
+</style>
+
 <section style="margin-top:50px" class="section">
     <div class="container">
         <div class="tile is-ancestor">
             <div class="tile is-4 is-vertical is-parent">
                 <div class="tile is-child box has-text-centered">
                     <p class="title"> 空氣品質指標（AQI）</p>
+
                     <hr />
                     <div class="select is-rounded">
                         <form action="@Url.Action("Index","Home")" method="get">
-                            @Html.DropDownList("County", (IEnumerable<SelectListItem>)ViewBag.countyOptions, new { onchange= "if(this.value != 0) { this.form.submit(); }" })
+                            @Html.DropDownList("County", (IEnumerable<SelectListItem>)ViewBag.countyOptions, new { onchange = "if(this.value != 0) { this.form.submit(); }" })
                         </form>
                     </div>
                 </div>
@@ -60,7 +69,35 @@
             </div>
         </div>
 
-        @* 區別 *@
+        @* 區內 監測站 *@
+        <div class="columns">
+            <div class="column is-12">
+                @foreach (var item in Model)
+                {
+                    <div class="columns">
+                        <div class="column is-12">
+                            <a class="aqi_card" onclick="SelectSite('@item.SiteId')">
+                                <div class="aqi_item">
+                                    @item.SiteName
+                                </div>
+                                <div class="aqi_item @MyHelper.IsLevel(item.AQI)">
+                                    @if (!string.IsNullOrWhiteSpace(item.AQI))
+                                    {
+                                        @item.AQI
+                                    }
+                                    else
+                                    {
+                                        <p>無</p>
+                                    }
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+
         <div class="columns">
             @* 監測站 資料 *@
             <div class="column is-4">
@@ -76,7 +113,7 @@
                         else
                         {
                             <p>無</p>
-                        }  
+                        }
                     </div>
                 </div>
                 <div class="aqi_item_wrapper">
@@ -125,37 +162,144 @@
                 </div>
             </div>
 
-            @* 區內 監測站 *@
+
             <div class="column is-8">
-                @foreach (var item in Model)
-                {
-                    <div class="columns">
-                        <div class="column is-12">
-                            <a class="aqi_card" onclick="SelectSite('@item.SiteId')">
-                                <div class="aqi_item">
-                                    @item.SiteName
-                                </div>
-                                <div class="aqi_item @MyHelper.IsLevel(item.AQI)">
-                                    @if (!string.IsNullOrWhiteSpace(item.AQI))
-                                    {
-                                        @item.AQI
-                                    }
-                                    else
-                                    {
-                                        <p>無</p>
-                                    }
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                }
+                <div id="map" class="column"></div>
             </div>
         </div>
     </div>
 </section>
- 
+
 
 <script>
+    /* 初始化 Map */
+    function initMap() {
+        var map;
+        var markers = [];
+        var iconBase = "https://airtw.epa.gov.tw/images/";
+        var icons = {
+            well: {
+                icon: iconBase + "air_01.svg"
+            },
+            ordinary: {
+                icon: iconBase + "air_02.svg"
+            },
+            sensitive: {
+                icon: iconBase + "air_03.svg"
+            },
+            all: {
+                icon: iconBase + "air_04.svg"
+            },
+            unhealthy: {
+                icon: iconBase + "air_05.svg"
+            },
+            danger: {
+                icon: iconBase + "air_06.svg"
+            },
+        };
+
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: 23.6452265, lng: 121.0331083 },
+            zoom: 7,
+            mapTypeId: 'terrain',
+            // Styled Map - Night Mode
+            styles: [
+           { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },
+           { elementType: 'labels.text.stroke', stylers: [{ color: '#242f3e' }] },
+           { elementType: 'labels.text.fill', stylers: [{ color: '#746855' }] },
+           {
+               featureType: 'administrative.locality',
+               elementType: 'labels.text.fill',
+               stylers: [{ color: '#d59563' }]
+           },
+           {
+               featureType: 'poi',
+               elementType: 'labels.text.fill',
+               stylers: [{ color: '#d59563' }]
+           },
+           {
+               featureType: 'poi.park',
+               elementType: 'geometry',
+               stylers: [{ color: '#263c3f' }]
+           },
+           {
+               featureType: 'poi.park',
+               elementType: 'labels.text.fill',
+               stylers: [{ color: '#6b9a76' }]
+           },
+           {
+               featureType: 'road',
+               elementType: 'geometry',
+               stylers: [{ color: '#38414e' }]
+           },
+           {
+               featureType: 'road',
+               elementType: 'geometry.stroke',
+               stylers: [{ color: '#212a37' }]
+           },
+           {
+               featureType: 'road',
+               elementType: 'labels.text.fill',
+               stylers: [{ color: '#9ca5b3' }]
+           },
+           {
+               featureType: 'road.highway',
+               elementType: 'geometry',
+               stylers: [{ color: '#746855' }]
+           },
+           {
+               featureType: 'road.highway',
+               elementType: 'geometry.stroke',
+               stylers: [{ color: '#1f2835' }]
+           },
+           {
+               featureType: 'road.highway',
+               elementType: 'labels.text.fill',
+               stylers: [{ color: '#f3d19c' }]
+           },
+           {
+               featureType: 'transit',
+               elementType: 'geometry',
+               stylers: [{ color: '#2f3948' }]
+           },
+           {
+               featureType: 'transit.station',
+               elementType: 'labels.text.fill',
+               stylers: [{ color: '#d59563' }]
+           },
+           {
+               featureType: 'water',
+               elementType: 'geometry',
+               stylers: [{ color: '#17263c' }]
+           },
+           {
+               featureType: 'water',
+               elementType: 'labels.text.fill',
+               stylers: [{ color: '#515c6d' }]
+           },
+           {
+               featureType: 'water',
+               elementType: 'labels.text.stroke',
+               stylers: [{ color: '#17263c' }]
+           }
+            ]
+        });
+
+        //建立地圖 marker 的集合
+        GetAllSites.done(function (data) {
+            for (var i = 0; i < data.length; i++) {
+                markers = new google.maps.Marker({
+                    position: new google.maps.LatLng(data[i].Latitude, data[i].Longitude),
+                    map: map,
+                    title: data[i].SiteName + ": " + data[i].AQI,
+                    type: checkAQI(data[i].AQI),
+                    icon: icons[checkAQI(data[i].AQI)].icon,
+                });
+            }
+        })
+    }
+
+    /* 取得單一監測站 */
     function SelectSite(SiteId) {
         var url = "/Home/GetSite?SiteId=" + SiteId;
         $.ajax({
@@ -173,8 +317,38 @@
                 $("#NO2").html(data.NO2);
                 $("#WindSpeed").html(data.WindSpeed);
                 $("#WindDirec").html(data.WindDirec);
- 
+
             }
         })
     }
+
+    /* 取得所有監測站 */
+    var GetAllSites = $.ajax({
+        type: "GET",
+        url: '/Home/GetAllSite',
+        dataType: 'json',
+    });
+
+    /* AQI 分類 */
+    function checkAQI(aqi) {
+        if (aqi <= 50)
+            return "well";
+        else if (50 < aqi && aqi <= 100)
+            return "ordinary";
+        else if (100 < aqi && aqi <= 150)
+            return "sensitive";
+        else if (150 < aqi && aqi <= 200)
+            return "all";
+        else if (200 < aqi && aqi <= 300)
+            return "unhealthy";
+        else if (300 < aqi && aqi <= 400)
+            return "danger";
+        else
+            return null;
+    }
+
+</script>
+
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDRYyKhiXS0Bmtfld_yftl2ATtitLYl7k0&callback=initMap">
 </script>

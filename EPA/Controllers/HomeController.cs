@@ -73,6 +73,19 @@ namespace EPA.Controllers
             return Json(site, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult GetAllSite()
+        {
+            List<AQIViewModel> sites = new List<AQIViewModel>();
+
+            var client = new RestClient("http://opendata2.epa.gov.tw/AQI.json");
+            var request = new RestRequest(Method.GET);
+
+            IRestResponse response = client.Execute(request);
+
+            sites = JsonConvert.DeserializeObject<List<AQIViewModel>>(response.Content);
+
+            return Json(sites, JsonRequestBehavior.AllowGet);
+        }
 
         public ActionResult Map()
         {
