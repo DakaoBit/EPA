@@ -1,21 +1,17 @@
-﻿using EPA.Models.ViewModels;
-using Newtonsoft.Json;
-using RestSharp;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace EPA.Controllers
+namespace EPA.Areas.Air.Controllers
 {
     public class HomeController : Controller
     {
-
+        // GET: Air/Home
         public ActionResult Index()
         {
             return View();
         }
- 
     }
 }
