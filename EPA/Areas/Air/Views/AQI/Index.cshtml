@@ -14,6 +14,41 @@
 
 <section style="margin-top:50px" class="section">
     <div class="container">
+        <div class="columns">
+            <div class="column">
+                <div class="field is-grouped">
+                    <p class="control">
+                        <a onclick="" title="空氣品質指標" class="button is-rounded">AQI</a>
+                    </p>
+                    <p class="control">
+                        <a onclick="" title="細懸浮微粒" class="button is-rounded">PM <sub>2.5</sub></a>
+                    </p>
+                    <p class="control">
+                        <a onclick="" title="懸浮微粒" class="button is-rounded">PM <sub>10</sub></a>
+                    </p>
+                    <p class="control">
+                        <a onclick=""  title="臭氧 " class="button is-rounded">O <sub>3</sub></a>
+                    </p>
+                    <p class="control">
+                        <a onclick=""  title="臭氧每八小時 " class="button is-rounded">O <sub>3</sub> &nbsp; 8hr</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="tile is-ancestor">
+            <div class="tile is-12 is-parent">
+                <div id="map" class="tile is-child box"></div>
+            </div>
+        </div>
+    </div>
+
+   
+</section>
+
+@* 各監測站 *@
+<section>
+
+    <div class="container">
         <div class="tile is-ancestor">
             <div class="tile is-4 is-vertical is-parent">
                 <div class="tile is-child box has-text-centered">
@@ -59,6 +94,7 @@
 
     <hr />
 
+
     <div class="container">
         @* 所屬縣市 *@
         <div class="columns">
@@ -69,36 +105,7 @@
                 <p class="subtitle">@Model.First().PublishTime 更新</p>
             </div>
         </div>
-
-        @* 區內 監測站 *@
-        <div class="columns">
-            <div class="column is-12">
-                @foreach (var item in Model)
-                {
-                    <div class="columns">
-                        <div class="column is-12">
-                            <a class="aqi_card" onclick="SelectSite('@item.SiteId')">
-                                <div class="aqi_item">
-                                    @item.SiteName
-                                </div>
-                                <div class="aqi_item @MyHelper.IsLevel(item.AQI)">
-                                    @if (!string.IsNullOrWhiteSpace(item.AQI))
-                                    {
-                                        @item.AQI
-                                    }
-                                    else
-                                    {
-                                        <p>無</p>
-                                    }
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                }
-            </div>
-        </div>
-
-
+ 
         <div class="columns">
             @* 監測站 資料 *@
             <div class="column is-4">
@@ -119,6 +126,10 @@
                 </div>
                 <div class="aqi_item_wrapper">
                     <ul>
+                        <li>
+                            <span class="aqi_item_cht">狀態</span>
+                            <span id="Status" class="aqi_item_index">@Model.First().Status</span>
+                        </li>
                         <li>
                             <span class="aqi_item_cht">臭氧</span>
                             <span class="aqi_item_eng">O<sub>3</sub>(ppb)</span>
@@ -162,10 +173,30 @@
                     </ul>
                 </div>
             </div>
-
-
+            @* 區內 監測站 *@
             <div class="column is-8">
-                <div id="map" class="column"></div>
+                @foreach (var item in Model)
+                {
+                    <div class="columns">
+                        <div class="column is-12">
+                            <a class="aqi_card" onclick="SelectSite('@item.SiteId')">
+                                <div class="aqi_item">
+                                    @item.SiteName
+                                </div>
+                                <div class="aqi_item @MyHelper.IsLevel(item.AQI)">
+                                    @if (!string.IsNullOrWhiteSpace(item.AQI))
+                                    {
+                                        @item.AQI
+                                    }
+                                    else
+                                    {
+                                        <p>無</p>
+                                    }
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     </div>
@@ -198,6 +229,7 @@
             },
         };
 
+        //setting map
         map = new google.maps.Map(document.getElementById('map'), {
             center: { lat: 23.6452265, lng: 121.0331083 },
             zoom: 7,
@@ -291,9 +323,9 @@
                 markers = new google.maps.Marker({
                     position: new google.maps.LatLng(data[i].Latitude, data[i].Longitude),
                     map: map,
-                    title: data[i].SiteName + ": " + data[i].AQI,
-                    type: checkAQI(data[i].AQI),
-                    icon: icons[checkAQI(data[i].AQI)].icon,
+                    title: data[i].SiteName + ": " + data[i].Status,
+                    type: setGrading(data[i].AQI),
+                    icon: icons[setGrading(data[i].AQI)].icon,
                 });
             }
         })
@@ -308,7 +340,8 @@
             success: function (data) {
                 $("#SiteName").html(data.SiteName);
                 $("#AQI").html(data.AQI);
-
+                isLevel(data.AQI);
+                $("#Status").html(data.Status);
                 $("#O3").html(data.O3);
                 $("#PM10").html(data.PM10);
                 $("#PM25").html(data.PM25);
@@ -317,7 +350,6 @@
                 $("#NO2").html(data.NO2);
                 $("#WindSpeed").html(data.WindSpeed);
                 $("#WindDirec").html(data.WindDirec);
-
             }
         })
     }
@@ -330,7 +362,7 @@
     });
 
     /* AQI 分類 */
-    function checkAQI(aqi) {
+    function setGrading(aqi) {
         if (aqi <= 50)
             return "well";
         else if (50 < aqi && aqi <= 100)
@@ -343,6 +375,24 @@
             return "unhealthy";
         else if (300 < aqi && aqi <= 400)
             return "danger";
+        else
+            return null;
+    }
+
+    /* 設定 AQI color */
+    function isLevel(aqi){
+        if (aqi <= 50)
+            $("#AQI").removeClass().addClass("aqi_item bg_green");
+        else if (50 < aqi && aqi <= 100)
+            $("#AQI").removeClass().addClass("aqi_item bg_yellow");
+        else if (100 < aqi && aqi <= 150)
+            $("#AQI").removeClass().addClass("aqi_item bg_orange");
+        else if (150 < aqi && aqi <= 200)
+            $("#AQI").removeClass().addClass("aqi_item bg_red");
+        else if (200 < aqi && aqi <= 300)
+            $("#AQI").removeClass().addClass("aqi_item bg_purple");
+        else if (300 < aqi && aqi <= 400)
+            $("#AQI").removeClass().addClass("aqi_item bg_lakes");
         else
             return null;
     }
