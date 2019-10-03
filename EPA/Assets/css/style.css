@@ -32,14 +32,15 @@
     border: 2px solid #1C1C1C;
     text-align: center;
     font-family: 'Noto Sans TC', sans-serif;
-    font-size: 16px;
+    font-size: 24px;
     text-align: center;
     border-collapse: collapse;
     width: 100%;
     background-color: #fff;
+    color:#000;
 }
 
-    .aqi_table thead th, .aqi_table tbody td {
+    .aqi_table tbody td {
         padding: 15px;
         border: 2px solid #000;
         text-align: center;

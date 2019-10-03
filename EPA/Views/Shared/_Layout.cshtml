@@ -68,7 +68,10 @@
         </div>
     </nav>
 
-    @RenderBody()
+    <div style="margin-top:50px">
+        @RenderBody()
+    </div>
+
 
     <footer class="has-background-grey-light">
         <div class="container">
@@ -93,5 +96,15 @@
     </footer>
 
     @RenderSection("scripts", required: false)
+    <script>
+        $(document).ready(function () {
+            // Check for click events on the navbar burger icon
+            $(".navbar-burger").click(function () {
+                // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+                $(".navbar-burger").toggleClass("is-active");
+                $(".navbar-menu").toggleClass("is-active");
+            });
+        });
+    </script>
 </body>
 </html>

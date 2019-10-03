@@ -7,36 +7,73 @@
 <style>
     #map {
         width: 100%;
-        height: 500px;
+        height: 450px;
         background-color: grey;
     }
 </style>
+@*
+    https://www.wikiwand.com/zh-tw/%E7%A9%BA%E6%B0%94%E8%B4%A8%E9%87%8F%E6%8C%87%E6%95%B0
+    https://jsfiddle.net/mrrodd/JnpqY/
+*@
 
-<section style="margin-top:50px" class="section">
+<section class="hero">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                全國空氣品質指標
+            </h1>
+           
+        </div>
+    </div>
+</section>
+<section class="section">
     <div class="container">
         <div class="columns">
-            <div class="column">
+            <div class="column is-4">
                 <div class="field is-grouped">
                     <p class="control">
-                        <a onclick="" title="空氣品質指標" class="button is-rounded">AQI</a>
+                        <a onclick="initMap('1')" title="空氣品質指標" class="button is-rounded">AQI</a>
                     </p>
                     <p class="control">
-                        <a onclick="" title="細懸浮微粒" class="button is-rounded">PM <sub>2.5</sub></a>
+                        <a onclick="initMap('2')" title="細懸浮微粒" class="button is-rounded">PM <sub>2.5</sub></a>
                     </p>
                     <p class="control">
-                        <a onclick="" title="懸浮微粒" class="button is-rounded">PM <sub>10</sub></a>
+                        <a onclick="initMap('3')" title="懸浮微粒" class="button is-rounded">PM <sub>10</sub></a>
                     </p>
                     <p class="control">
-                        <a onclick=""  title="臭氧 " class="button is-rounded">O <sub>3</sub></a>
-                    </p>
-                    <p class="control">
-                        <a onclick=""  title="臭氧每八小時 " class="button is-rounded">O <sub>3</sub> &nbsp; 8hr</a>
+                        <a onclick="initMap('4')" title="臭氧每八小時 " class="button is-rounded">O <sub>3</sub> &nbsp; 8hr</a>
                     </p>
                 </div>
             </div>
         </div>
+         
         <div class="tile is-ancestor">
-            <div class="tile is-12 is-parent">
+            <div class="tile is-3 is-vertical is-parent">
+                <div class="tile is-child box">
+                    <table class="aqi_table">
+                        <tr>
+                            <td class="bg_green">良好</td>
+                        </tr>
+                        <tr>
+                            <td class="bg_yellow">普通</td>
+                        </tr>
+                        <tr>
+                            <td class="bg_orange">對敏感族群不健康</td>
+                        </tr>
+                        <tr>
+                            <td class="bg_red">對所有族群不健康</td>
+                        </tr>
+                        <tr>
+                            <td class="bg_purple">非常不健康</td>
+                        </tr>
+                        <tr>
+                            <td class="bg_lakes">危害</td>
+                        </tr>
+                    </table>
+                </div>
+                
+            </div>
+            <div class="tile is-9 is-parent">
                 <div id="map" class="tile is-child box"></div>
             </div>
         </div>
@@ -49,47 +86,7 @@
 <section>
 
     <div class="container">
-        <div class="tile is-ancestor">
-            <div class="tile is-4 is-vertical is-parent">
-                <div class="tile is-child box has-text-centered">
-                    <p class="title"> 空氣品質指標（AQI）</p>
-
-                    <hr />
-                    <div class="select is-rounded">
-                        <form action="@Url.Action("Index","AQI", new { area = "AQI" })" method="get">
-                            @Html.DropDownList("County", (IEnumerable<SelectListItem>)ViewBag.countyOptions, new { onchange = "if(this.value != 0) { this.form.submit(); }" })
-                        </form>
-                    </div>
-                </div>
-
-            </div>
-            <div class="tile is-8 is-parent">
-                <div class="tile is-child box">
-                    <table class="aqi_table">
-                        <thead>
-                            <tr>
-                                <th class="bg_green"> 0 ~ 50</th>
-                                <th class="bg_yellow"> 51 ~ 100</th>
-                                <th class="bg_orange"> 101 ~ 150</th>
-                                <th class="bg_red"> 151 ~ 200</th>
-                                <th class="bg_purple"> 201 ~ 300</th>
-                                <th class="bg_lakes"> 301 ~ 400</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>良好</td>
-                                <td>普通</td>
-                                <td>對敏感族群不健康</td>
-                                <td>對所有族群不健康</td>
-                                <td>非常不健康</td>
-                                <td>危害</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+        
     </div>
 
     <hr />
@@ -108,7 +105,7 @@
  
         <div class="columns">
             @* 監測站 資料 *@
-            <div class="column is-4">
+            <div class="column is-4">             
                 <div class="aqi_card">
                     <div id="SiteName" class="aqi_item">
                         @Model.First().SiteName
@@ -175,6 +172,17 @@
             </div>
             @* 區內 監測站 *@
             <div class="column is-8">
+                <div class="tile is-child box has-text-centered">
+                    <div class="field">
+                        <label class="label">選擇縣市：</label>
+                        <div class="select is-rounded">
+                            <form action="@Url.Action("Index","AQI", new { area = "AQI" })" method="get">
+                                @Html.DropDownList("County", (IEnumerable<SelectListItem>)ViewBag.countyOptions, new { onchange = "if(this.value != 0) { this.form.submit(); }" })
+                            </form>
+                        </div>
+                    </div>          
+                </div>
+                <hr />
                 @foreach (var item in Model)
                 {
                     <div class="columns">
@@ -204,13 +212,13 @@
 
 <script>
     /* 初始化 Map */
-    function initMap() {
+    function initMap(category) {
         var map;
         var markers = [];
         var iconBase = "https://airtw.epa.gov.tw/images/";
         var icons = {
             well: {
-                icon: iconBase + "air_01.svg"
+                icon: iconBase + "air_01.svg",
             },
             ordinary: {
                 icon: iconBase + "air_02.svg"
@@ -320,16 +328,64 @@
         //建立地圖 marker 的集合
         GetAllSites.done(function (data) {
             for (var i = 0; i < data.length; i++) {
-                markers = new google.maps.Marker({
-                    position: new google.maps.LatLng(data[i].Latitude, data[i].Longitude),
-                    map: map,
-                    title: data[i].SiteName + ": " + data[i].Status,
-                    type: setGrading(data[i].AQI),
-                    icon: icons[setGrading(data[i].AQI)].icon,
-                });
+                if (category == null) {
+                    markers = new google.maps.Marker({
+                        position: new google.maps.LatLng(data[i].Latitude, data[i].Longitude),
+                        map: map,
+                        title: data[i].SiteName + ": " + data[i].Status,
+                        type: setGrading(data[i].AQI),
+                        icon: icons[setGrading(data[i].AQI)].icon,
+                    });
+                }
+                else {
+                    //判別 button
+                    switch (category) {
+                        case '1':
+                            markers = new google.maps.Marker({
+                                position: new google.maps.LatLng(data[i].Latitude, data[i].Longitude),
+                                map: map,
+                                title: data[i].SiteName + ": " + data[i].Status,
+                                type: setGrading(data[i].AQI),
+                                icon: icons[setGrading(data[i].AQI)].icon,
+                            });
+                            break;
+                        case '2':
+                            markers = new google.maps.Marker({
+                                position: new google.maps.LatLng(data[i].Latitude, data[i].Longitude),
+                                map: map,
+                                title: data[i].SiteName + ": " + data[i].PM25_AVG,
+                                type: setGrading(data[i].PM25_AVG),
+                                icon: icons[setGrading(data[i].PM25_AVG)].icon,
+                            });
+                            break;
+                        case '3':
+                            markers = new google.maps.Marker({
+                                position: new google.maps.LatLng(data[i].Latitude, data[i].Longitude),
+                                map: map,
+                                title: data[i].SiteName + ": " + data[i].PM10_AVG,
+                                type: setGrading(data[i].PM10_AVG),
+                                icon: icons[setGrading(data[i].PM10_AVG)].icon,
+                            });
+                            break
+                        case '4':
+                            markers = new google.maps.Marker({
+                                position: new google.maps.LatLng(data[i].Latitude, data[i].Longitude),
+                                map: map,
+                                title: data[i].SiteName + ": " + data[i].O3_8hr,
+                                type: setGrading(data[i].O3_8hr),
+                                icon: icons[setGrading(data[i].O3_8hr)].icon,
+                            });
+                            break;
+
+                    }
+                }
+             
+             
             }
         })
-    }
+     }
+
+ 
 
     /* 取得單一監測站 */
     function SelectSite(SiteId) {

@@ -219,8 +219,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Air\Models\" />
     <Folder Include="Areas\Air\Views\Shared\" />
-    <Folder Include="Views\Air\" />
-    <Folder Include="Views\AQI\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

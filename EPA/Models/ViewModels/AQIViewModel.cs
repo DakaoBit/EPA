@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -28,10 +29,15 @@ namespace EPA.Models.ViewModels
         public string O3 { get; set; }
         [Display(Name = "臭氧 8小時移動 O3(ppb)")]
         public string O3_8hr { get; set; }
+
+        [JsonProperty(PropertyName = "PM10")]
         [Display(Name = "懸浮微粒 PM10(μg / m3)")]
         public string PM10 { get; set; }
+
+        [JsonProperty(PropertyName = "PM2.5")]
         [Display(Name = "細懸浮微粒 PM2.5(μg / m3)")]
         public string PM25 { get; set; }
+
         [Display(Name = "二氧化氮 NO2(ppb)")]
         public string NO2 { get; set; }
         [Display(Name = "氮氧化物 (ppb)")]
@@ -44,10 +50,15 @@ namespace EPA.Models.ViewModels
         public string WindDirec { get; set; }
         [Display(Name = "監測日期")]
         public string PublishTime { get; set; }
+
+        [JsonProperty(PropertyName = "PM2.5_AVG")]
         [Display(Name = "細懸浮微粒移動平均值")]
         public string PM25_AVG { get; set; }
+
+        [JsonProperty(PropertyName = "PM10_AVG")]
         [Display(Name = "懸浮微粒移動平均值")]
         public string PM10_AVG { get; set; }
+
         [Display(Name = "二氧化硫移動平均值")]
         public string SO2_AVG { get; set; }
         [Display(Name = "經度")]
@@ -56,5 +67,6 @@ namespace EPA.Models.ViewModels
         public string Latitude { get; set; }
         [Display(Name = "監測站編號")]
         public string SiteId { get; set; }
+
     }
 }
