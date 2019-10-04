@@ -7,7 +7,7 @@
 <style>
     #map {
         width: 100%;
-        height: 450px;
+        height: 540px;
         background-color: grey;
     }
 </style>
@@ -16,20 +16,38 @@
     https://jsfiddle.net/mrrodd/JnpqY/
 *@
 
-<section class="hero">
-    <div class="hero-body">
-        <div class="container">
-            <h1 class="title">
-                全國空氣品質指標
-            </h1>
-           
+<section class="section">
+    <div class="container">
+        <h1 class="title">
+            全國空氣品質指標
+        </h1>
+
+        <div class="columns">
+            <div class="column is-8">
+                <table style="color:#000;border: 2px solid #1C1C1C;padding:5px;" class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                    <tr>
+                        <td style="border: 2px solid #000;" class="bg_green">良好</td>
+                        <td style="border: 2px solid #000;" class="bg_yellow">普通</td>
+                        <td style="border: 2px solid #000;" class="bg_orange">對敏感族群不健康</td>
+                        <td style="border: 2px solid #000;" class="bg_red">對所有族群不健康</td>
+                        <td style="border: 2px solid #000;" class="bg_purple">非常不健康</td>
+                        <td style="border: 2px solid #000;" class="bg_lakes">危害</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="column has-text-right">
+                <p class="subtitle">
+                    @Model.First().PublishTime 更新
+                </p>
+            </div>
         </div>
+
     </div>
 </section>
 <section class="section">
     <div class="container">
         <div class="columns">
-            <div class="column is-4">
+            <div class="column">
                 <div class="field is-grouped">
                     <p class="control">
                         <a onclick="initMap('1')" title="空氣品質指標" class="button is-rounded">AQI</a>
@@ -44,68 +62,12 @@
                         <a onclick="initMap('4')" title="臭氧每八小時 " class="button is-rounded">O <sub>3</sub> &nbsp; 8hr</a>
                     </p>
                 </div>
-            </div>
+            </div>        
         </div>
          
-        <div class="tile is-ancestor">
-            <div class="tile is-3 is-vertical is-parent">
-                <div class="tile is-child box">
-                    <table class="aqi_table">
-                        <tr>
-                            <td class="bg_green">良好</td>
-                        </tr>
-                        <tr>
-                            <td class="bg_yellow">普通</td>
-                        </tr>
-                        <tr>
-                            <td class="bg_orange">對敏感族群不健康</td>
-                        </tr>
-                        <tr>
-                            <td class="bg_red">對所有族群不健康</td>
-                        </tr>
-                        <tr>
-                            <td class="bg_purple">非常不健康</td>
-                        </tr>
-                        <tr>
-                            <td class="bg_lakes">危害</td>
-                        </tr>
-                    </table>
-                </div>
-                
-            </div>
-            <div class="tile is-9 is-parent">
-                <div id="map" class="tile is-child box"></div>
-            </div>
-        </div>
-    </div>
 
-   
-</section>
-
-@* 各監測站 *@
-<section>
-
-    <div class="container">
-        
-    </div>
-
-    <hr />
-
-
-    <div class="container">
-        @* 所屬縣市 *@
         <div class="columns">
-            <div class="column is-half">
-                <p class="title">@Model.First().County</p>
-            </div>
-            <div class="column is-half has-text-right">
-                <p class="subtitle">@Model.First().PublishTime 更新</p>
-            </div>
-        </div>
- 
-        <div class="columns">
-            @* 監測站 資料 *@
-            <div class="column is-4">             
+            <div class="column is-4">
                 <div class="aqi_card">
                     <div id="SiteName" class="aqi_item">
                         @Model.First().SiteName
@@ -170,8 +132,20 @@
                     </ul>
                 </div>
             </div>
-            @* 區內 監測站 *@
             <div class="column is-8">
+                <div id="map" class="tile is-child box"></div>
+            </div>
+          
+        </div>      
+    </div>   
+</section>
+
+<!-- 關閉 -->
+@*<section>
+    <div class="container">
+        <!-- 所屬縣市 -->
+        <div class="columns">    
+            <div class="column is-4">
                 <div class="tile is-child box has-text-centered">
                     <div class="field">
                         <label class="label">選擇縣市：</label>
@@ -182,7 +156,9 @@
                         </div>
                     </div>          
                 </div>
-                <hr />
+            </div>
+            <!-- 區內 監測站 -->
+            <div class="column is-8">
                 @foreach (var item in Model)
                 {
                     <div class="columns">
@@ -208,7 +184,7 @@
             </div>
         </div>
     </div>
-</section>
+</section>*@
 
 <script>
     /* 初始化 Map */
@@ -325,6 +301,14 @@
             ]
         });
 
+        //setting closure marker listener
+        var addListenerToMarker = function (marker, SiteId) {
+            marker.addListener('click', function () {
+                // 取得單一監測站資訊
+                SelectSite(SiteId);
+            });
+        }
+
         //建立地圖 marker 的集合
         GetAllSites.done(function (data) {
             for (var i = 0; i < data.length; i++) {
@@ -336,6 +320,8 @@
                         type: setGrading(data[i].AQI),
                         icon: icons[setGrading(data[i].AQI)].icon,
                     });
+
+                    addListenerToMarker(markers, data[i].SiteId);
                 }
                 else {
                     //判別 button
@@ -348,6 +334,8 @@
                                 type: setGrading(data[i].AQI),
                                 icon: icons[setGrading(data[i].AQI)].icon,
                             });
+                            addListenerToMarker(markers, data[i].SiteId);
+
                             break;
                         case '2':
                             markers = new google.maps.Marker({
@@ -357,6 +345,7 @@
                                 type: setGrading(data[i].PM25_AVG),
                                 icon: icons[setGrading(data[i].PM25_AVG)].icon,
                             });
+                            addListenerToMarker(markers, data[i].SiteId);
                             break;
                         case '3':
                             markers = new google.maps.Marker({
@@ -366,6 +355,7 @@
                                 type: setGrading(data[i].PM10_AVG),
                                 icon: icons[setGrading(data[i].PM10_AVG)].icon,
                             });
+                            addListenerToMarker(markers, data[i].SiteId);
                             break
                         case '4':
                             markers = new google.maps.Marker({
@@ -375,6 +365,7 @@
                                 type: setGrading(data[i].O3_8hr),
                                 icon: icons[setGrading(data[i].O3_8hr)].icon,
                             });
+                            addListenerToMarker(markers, data[i].SiteId);
                             break;
 
                     }
@@ -384,8 +375,6 @@
             }
         })
      }
-
- 
 
     /* 取得單一監測站 */
     function SelectSite(SiteId) {

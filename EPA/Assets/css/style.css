@@ -27,25 +27,7 @@
 
 
 /**  **/
-
-.aqi_table {
-    border: 2px solid #1C1C1C;
-    text-align: center;
-    font-family: 'Noto Sans TC', sans-serif;
-    font-size: 24px;
-    text-align: center;
-    border-collapse: collapse;
-    width: 100%;
-    background-color: #fff;
-    color:#000;
-}
-
-    .aqi_table tbody td {
-        padding: 15px;
-        border: 2px solid #000;
-        text-align: center;
-        vertical-align: middle;
-    }
+ 
 
 select {
     font-family: 'Noto Sans TC', sans-serif;
@@ -64,7 +46,7 @@ select {
 }
 
 a.aqi_card {
-   color: #4a4a4a;
+    color: #4a4a4a;
 }
 
 .aqi_item {
@@ -84,7 +66,7 @@ a.aqi_card {
 
 
 .aqi_item_wrapper {
-    position:relative;
+    position: relative;
     border-left: 3px solid #363636;
     border-right: 3px solid #363636;
     border-bottom: 3px solid #363636;
@@ -129,6 +111,3 @@ a.aqi_card {
     font-size: 20px;
     font-weight: 900;
 }
-
- 
-
